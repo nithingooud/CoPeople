@@ -34,10 +34,8 @@ router.post('/signIn',(req,res)=>{
     if(!email || !password){
         return res.json({message:"please fill all the required fields"})
     }
-    console.log(req.body)
     User.findOne({email:email}).then((savedUser)=>{
         if(!savedUser){
-            console.log(savedUser)
             return res.status(422).json({error:"Invalid email or password"})
         }
         bcrypt.compare(password,savedUser.password).then(doMatch=> {

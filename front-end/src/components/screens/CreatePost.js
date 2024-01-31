@@ -1,10 +1,13 @@
 import React,{ useState } from "react"
-import { Form } from "react-router-dom"
+import { useNavigate} from "react-router-dom"
+import M from "materialize-css"
 
 const CreatePost = () =>{
+    const navigate = useNavigate()
     const [title,setTitle] = useState("")
     const [body,setBody] = useState("")
     const [image,setImage] = useState("")
+    const [url,setUrl] = useState("")
 
     const postData = () => {
         const formData = new FormData()
@@ -15,16 +18,25 @@ const CreatePost = () =>{
         fetch('https://api.cloudinary.com/v1_1/nithinmanda/image/upload',{
             method:'post',
             body: formData
+        }).then(res=>res.json()).then(data=> {
+            setUrl(data.url)
         })
 
-
-        // fetch('/createPost', {
-        //     method:'POST',
-        //     headers:{
-        //         "content-type":"application/json"
-        //     },
-        //     body: formData,
-        // })
+        fetch("/createPost",{
+            method:'post',
+            headers:{
+                "content-type":"application/json",
+                "authorization":localStorage.getItem("jwt")
+            },
+            body: JSON.stringify({title,body,pic:url})
+        }).then(res=>res.json()).then(data=>{
+            if(data.error){
+                M.toast({html: data.error, classes: 'square #d32f2f red darken-2'});
+            } else {
+                M.toast({html: 'posted succesfully', classes: 'square #66bb6a green lighten-1'});
+                navigate('/')
+            }
+        }).catch(err=> console.log(err))
     }
 
     return (
@@ -40,7 +52,7 @@ const CreatePost = () =>{
                     <input className="file-path validate" type="text"/>
                 </div>
             </div> 
-            <button className='btn waves-effect waves-light #64b5f6 blue darken-1'>submit post</button>
+            <button className='btn waves-effect waves-light #64b5f6 blue darken-1' onClick={()=>postData()}>submit post</button>
 
         </div>
     )

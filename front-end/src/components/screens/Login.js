@@ -16,10 +16,10 @@ const LogIn= () =>{
             },
             body: JSON.stringify({password:password,email:email})
         }).then(res=>res.json()).then(data=>{
-            console.log(data)
             if(data.error){
                 M.toast({html: data.error, classes: 'square #d32f2f red darken-2'});
             } else {
+                localStorage.setItem("jwt",data.token)
                 M.toast({html: 'signed In successfully', classes: 'square #66bb6a green lighten-1'});
                 navigate('/')
             }

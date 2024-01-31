@@ -15,11 +15,11 @@ router.get('/mypost',requiredLogin,async (req,res)=>{
 })
 
 router.post('/createPost',requiredLogin,(req,res)=>{
-      const {title,body} = req.body
-      if(!title || !body){
-        res.status(402).json({error:"please fill all the required fields"})
+      const {title,body, pic} = req.body
+      if(!title || !body || !pic){
+        res.status(402).json({error:"please fill all fields"})
       }
-      Post.create({title,body,postedBy:req.user}).then(result=> res.json({post:result})).catch(err=>console.log(err))
+      Post.create({title:title,body:body,photo:pic,postedBy:req.user}).then(result=> res.json({post:result})).catch(err=>console.log(err))
 
 })
 

@@ -5,7 +5,7 @@ const router = express.Router()
 const Post = mongoose.model('Post')
 const requiredLogin = require('../middlewares/requiredLogin')
 
-router.get('/allposts',(req,res)=>{
+router.get('/allposts',requiredLogin,(req,res)=>{
     Post.find({}).populate('postedBy','_id name').then(result=> res.json(result)).catch(err=> console.log(err))
 })
 

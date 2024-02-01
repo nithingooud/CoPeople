@@ -1,38 +1,37 @@
-import React from "react"
+import React, { useState ,useEffect} from "react"
 
 const Home=()=>{
+   const [allImages, setAllImages] = useState([])
+
+   useEffect(()=>{
+      getImages()
+   },[])
+
+   const getImages = () => {
+       fetch('/allposts',{
+         method:'get',
+         headers:{
+            "content-type":"application/json",
+            "authorization": localStorage.getItem("jwt")
+        },
+       }).then(res=> res.json()).then(data=>{console.log(data); setAllImages(data)})
+   }
+
    return (
+      
       <div className="home">
-         <div className="card home-card">
-            <h5>Ramesh</h5>
-            <img src='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bmF0dXJlfGVufDB8fDB8fHww'/>
-            <div className="card-content">
-               <i className="material-icons">favorite</i>
-               <h6>Super Image</h6>
-               <p>very exciting</p>
-               <input type="text" placeholder="add a comment"/>
+         {allImages.map(image => (
+            <div className="card home-card" key={image._id}>
+               <h5>{image.postedBy.name}</h5>
+               <img src={image.photo}/>
+               <div className="card-content">
+                  <i className="material-icons">favorite</i>
+                  <h6>{image.title}</h6>
+                  <p>{image.body}</p>
+                  <input type="text" placeholder="add a comment"/>
+               </div>
             </div>
-         </div>
-         <div className="card home-card">
-            <h5>Ramesh</h5>
-            <img src='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bmF0dXJlfGVufDB8fDB8fHww'/>
-            <div className="card-content">
-            <i className="material-icons">favorite</i>
-               <h6>Super Image</h6>
-               <p>very exciting</p>
-               <input type="text" placeholder="add a comment"/>
-            </div>
-         </div>
-         <div className="card home-card">
-            <h5>Ramesh</h5>
-            <img src='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bmF0dXJlfGVufDB8fDB8fHww'/>
-            <div className="card-content">
-            <i className="material-icons">favorite</i>
-               <h6>Super Image</h6>
-               <p>very exciting</p>
-               <input type="text" placeholder="add a comment"/>
-            </div>
-         </div>
+         ))}
       </div>
    )
 }

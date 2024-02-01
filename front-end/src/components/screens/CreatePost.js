@@ -1,4 +1,4 @@
-import React,{ useState } from "react"
+import React,{ useState,useEffect } from "react"
 import { useNavigate} from "react-router-dom"
 import M from "materialize-css"
 
@@ -8,6 +8,26 @@ const CreatePost = () =>{
     const [body,setBody] = useState("")
     const [image,setImage] = useState("")
     const [url,setUrl] = useState("")
+
+    useEffect(()=>{
+        if(url){
+            fetch("/createPost",{
+                method:'post',
+                headers:{
+                    "content-type":"application/json",
+                    "authorization":localStorage.getItem("jwt")
+                },
+                body: JSON.stringify({title,body,pic:url})
+            }).then(res=>res.json()).then(data=>{
+                if(data.error){
+                    M.toast({html: data.error, classes: 'square #d32f2f red darken-2'});
+                } else {
+                    M.toast({html: 'posted succesfully', classes: 'square #66bb6a green lighten-1'});
+                    navigate('/')
+                }
+            }).catch(err=> console.log(err))
+        }
+    },[url])
 
     const postData = () => {
         const formData = new FormData()
@@ -21,22 +41,6 @@ const CreatePost = () =>{
         }).then(res=>res.json()).then(data=> {
             setUrl(data.url)
         })
-
-        fetch("/createPost",{
-            method:'post',
-            headers:{
-                "content-type":"application/json",
-                "authorization":localStorage.getItem("jwt")
-            },
-            body: JSON.stringify({title,body,pic:url})
-        }).then(res=>res.json()).then(data=>{
-            if(data.error){
-                M.toast({html: data.error, classes: 'square #d32f2f red darken-2'});
-            } else {
-                M.toast({html: 'posted succesfully', classes: 'square #66bb6a green lighten-1'});
-                navigate('/')
-            }
-        }).catch(err=> console.log(err))
     }
 
     return (

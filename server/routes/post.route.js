@@ -10,7 +10,7 @@ router.get('/allposts',requiredLogin,(req,res)=>{
 })
 
 router.get('/mypost',requiredLogin,async (req,res)=>{
-    let data = await Post.find({postedBy:req.user._id})
+    let data = await Post.find({postedBy:req.user._id}).populate('postedBy')
     return res.json(data)
 })
 
@@ -21,6 +21,26 @@ router.post('/createPost',requiredLogin,(req,res)=>{
       }
       Post.create({title:title,body:body,photo:pic,postedBy:req.user}).then(result=> res.json({post:result})).catch(err=>console.log(err))
 
+})
+
+router.put('/like',requiredLogin,(req,res)=>{
+      Post.findByIdAndUpdate(req.body.postId,{$push:{likes:req.user._id}},{new:true}).then((result,err)=>{
+        if(res){
+          return res.json(result)
+        } else {
+          res.status(422).json(err)
+        }
+      })
+})
+
+router.put('/unlike',requiredLogin,(req,res)=>{
+  Post.findByIdAndUpdate(req.body.postId,{$pull:{likes:req.user._id}},{new:true}).then((result,err)=>{
+    if(result){
+      return res.json(result)
+    } else {
+      res.status(422).json(err)
+    }
+  })
 })
 
 module.exports = router

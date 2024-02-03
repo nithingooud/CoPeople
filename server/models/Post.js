@@ -5,7 +5,8 @@ const postSchema = new mongoose.Schema({
     title:{type:String,required:true},
     body:{type:String,required:true},
     photo:{type:String,required:true},
-    postedBy:{type:mongoose.Types.ObjectId , ref:"User"}
+    postedBy:{type:mongoose.Types.ObjectId , ref:"User"},
+    likes:[{type:mongoose.Types.ObjectId,ref:"User"}]
 })
 
 mongoose.model('Post',postSchema)

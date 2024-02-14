@@ -43,4 +43,8 @@ router.put('/unlike',requiredLogin,(req,res)=>{
   })
 })
 
+router.put('/comment',requiredLogin,(req,res)=>{
+  Post.findByIdAndUpdate(req.body.postId,{$push:{comments:{text:req.body.comment,postedBy:req.user._id}}})
+})
+
 module.exports = router

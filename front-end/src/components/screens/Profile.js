@@ -11,7 +11,7 @@ const Profile=()=>{
            }
        }).then(res=>res.json()).then(data=>{
         setUserPosts(data)
-        setUserDetails(data[0].postedBy)                                     
+        setUserDetails(data[0]?.postedBy)                                     
       })
     },[])
     return (
@@ -24,9 +24,9 @@ const Profile=()=>{
             <div>
                 <h3>{userDetails.name}</h3>
                 <div style={{display:"flex",justifyContent:"space-between",width:"108%"}}>
-                    <h6>40 posts</h6>
-                    <h6>40 following</h6>
-                    <h6>40 followers</h6>
+                    <h6>{userPosts.length} posts</h6>
+                    <h6>{userDetails.followers} followers</h6>
+                    <h6>{userDetails.following} following</h6>
                 </div>
             </div>
           </div>
